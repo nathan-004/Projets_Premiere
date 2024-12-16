@@ -1,28 +1,68 @@
 from PIL import Image
-import random
 
-def hide_msg(msg,img):
+def txt_to_bin(txt_clair):
+    txt_binaire = ""
+    for lettres in txt_clair:
+        binaire = str(bin(ord(lettres)))
+        txt_binaire += binaire[2:].zfill(8)
+    bin_to_list(txt_binaire)
+    return txt_binaire
 
-    img_init = Image.open(str(img))
+def bin_to_list(txt_binaire):
+    txt_bin_list = []
+    for el in txt_binaire:
+        txt_bin_list.append(int(el))
+    size_txt_bin(txt_bin_list)
+    return txt_bin_list
+
+def size_txt_bin(txt_bin):
+    size_txt = len(txt_bin)
+    size_txt_binaire = str(bin(size_txt))[2:].zfill(16)
+    return size_txt_binaire
+
+def hide_msg(user_input, img_origine_path):
+
+    txt_clair = str(user_input)
+    #print(txt_clair)
+    #txt_bin = txt_to_bin(txt_clair)
+    #print(txt_bin)
+    #txt_bin_list = bin_to_list(txt_bin)
+    #print(txt_bin_list)
+
+    #size_txt = size_txt_bin(txt_bin_list)
+    #print(size_txt)
+    #size_txt_liste = bin_to_list(size_txt)
+    #print(size_txt_liste)
+
+    txt_bin_tot =[]
+
+    for el in bin_to_list(size_txt_bin(bin_to_list(txt_to_bin(txt_clair)))):
+        txt_bin_tot.append(int(el))
+    for el in bin_to_list(txt_to_bin(txt_clair)):
+        txt_bin_tot.append(int(el))
+    print(txt_bin_tot)
+
+    img_init = Image.open(str(img_origine_path))
     L, H = img_init.size
-    #print(L, H)
-    #img_init.show()
+
+    size_txt_tot = len(txt_bin_tot)
+
+    if size_txt_tot > L*H:
+        return "La taille de l'image ne peut supporter le texte"
+
+
     img_encode = Image.new("RGB", (L, H))
 
-    message = []
-
-    for el in msg:
-        message.append(int(el))
     indice = 0
 
     for y in range(H):
         for x in range(L):
             pixel = img_init.getpixel((x, y))
 
-            if indice >= len(message):
+            if indice >= size_txt_tot:
                 img_encode.putpixel((x, y), pixel)
             else:
-                if message[indice] == 0:
+                if txt_bin_tot[indice] == 0:
                     if pixel[0] % 2 != 0:
                         R = pixel[0] + 1
                         G = pixel[1]
@@ -47,5 +87,8 @@ def hide_msg(msg,img):
 
     img_encode.save("Image_encode.png")
 
-hide_msg("01110101", "Image.png")
 
+#txt = str(input("Entrez le message à cacher :"))
+#image_originale = str(input("Entrez le chemin d'accès à l'image originale :"))
+
+hide_msg("Voici mon texte a encoder", "Image.png")
