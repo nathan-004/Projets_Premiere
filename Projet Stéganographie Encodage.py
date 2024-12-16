@@ -14,3 +14,49 @@ def txt_to_binaire(txt):
 txt_to_binaire("abcdefg")
 
 
+
+
+from PIL import Image
+im_ada = Image.open("Ada_Lovelace.jpg") #On ouvre l'image que le professeur a déjà intégré à l'activité
+L, H = im_ada.size
+
+print(L,H)
+im_ada.show()
+
+im_encode =  Image.new("RGB",(L,H))
+
+message = [0,1,1]
+indice = 0
+
+for y in range(H):	
+    for x in range(L):
+        pixel = im_ada.getpixel((x,y)) # ??? à compléter 
+        
+        if indice >= len(message):
+            im_encode.putpixel((x,y),pixel)
+        else :
+        
+            if message[indice] == 0:
+                if pixel[0]%2 == 0:
+                    None
+                else:
+                    R = pixel[0] + 1
+                    G = pixel[1]
+                    B = pixel[2]
+                    pixel_prime = (R, G, B)
+
+            elif message[indice] == 1:
+
+                if pixel[0]%2 == 0:
+                    R = pixel[0] + 1
+                    G = pixel[1]
+                    B = pixel[2]
+                    pixel_prime = (R, G, B)
+
+                else :
+                    None
+
+            indice +=1
+
+im_encode.show()
+
